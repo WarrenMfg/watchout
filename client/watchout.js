@@ -9,7 +9,7 @@ let collisions = document.querySelector('.collisions span');
 
 let currentTimeCount;
 let collisionCount = 0;
-let mouseXLoc, mouseYLoc, xCollide, yCollide;
+let mouseXLoc, mouseYLoc, xDist, yDist, collide;
 
 
 // ASTEROIDS
@@ -38,17 +38,17 @@ let mouseR = parseFloat(mouse.getAttribute('r'));
 
 
 // DRAG BEHAVIOR
-d3.select('.mouse svg circle')
-  .call(
-    d3.behavior.drag()
-      .on('drag', startDrag)
-  );
-
 let startDrag = function() {
   d3.select(this)
     .attr('cx', this.x = d3.event.x)
     .attr('cy', this.y = d3.event.y);
 };
+
+d3.select('.mouse svg circle')
+  .call(
+    d3.behavior.drag()
+      .on('drag', startDrag)
+  );
 
 
 
@@ -72,10 +72,11 @@ setInterval(function() {
         mouseXLoc = parseFloat(mouse.getAttribute('cx'));
         mouseYLoc = parseFloat(mouse.getAttribute('cy'));
 
-        xCollide = Math.abs(mouseXLoc - parseFloat(elem.getAttribute('cx'))) <= mouseR;
-        yCollide = Math.abs(mouseYLoc - parseFloat(elem.getAttribute('cy'))) <= mouseR;
+        xDist = Math.abs(mouseXLoc - parseFloat(elem.getAttribute('cx')));
+        yDist = Math.abs(mouseYLoc - parseFloat(elem.getAttribute('cy')));
+        collide = Math.sqrt((xDist * xDist) + (yDist * yDist));
 
-        if (xCollide && yCollide) {
+        if (collide < (2 * mouseR)) {
           collision();
         }
       };
